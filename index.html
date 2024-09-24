@@ -74,9 +74,9 @@
                     else:
                         required_midterm = (overall_grade * 0.80) + (prelimoverall * weight_prelim)
                         required_final = (overall_grade * weight_final) + (required_midterm * weight_midterm) + (prelimoverall * weight_prelim)
-                        result_message = f"You Passed"
+            
                         result_message = f"Required Midterm Grade for Passing: {required_midterm:.2f}<br>Required Final Grade for Passing: {required_final:.2f}"
-                        Element("result").element.innerHTML = result_message
+                        Element("result").element.innerHTML = f"You Passed!!! {result_message}"
 
                         if overall_grade >= 90:
                             Element("result").element.innerHTML += "<br>You are a Dean’s Lister!"
