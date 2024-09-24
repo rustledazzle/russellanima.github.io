@@ -69,7 +69,7 @@
                     midfin = ((weight_midterm + gradeprelim) - prelim1) - weight_final
                     overall_grade = prelim1 + midfin
 
-                    if prelimoverall < 75:
+                    if overall_grade < 75:
                         Element("result").element.innerHTML = "You failed."
                     else:
                         required_midterm = (overall_grade * 0.80) + (prelimoverall * weight_prelim)
