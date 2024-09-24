@@ -1,1 +1,93 @@
-<h1>Hello WOrlds</h1>
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anima-Russell | Grade Computation Tool</title>
+    <link rel="stylesheet" href="/assets/css/style.css?v=78fdde3dac9f3624cc9d396bea0f43c21df98af7">
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+</head>
+<body>
+    <div class="container-lg px-3 my-5 markdown-body">
+        <h1><a href="https://rustledazzle.github.io/">Anima-Russell</a></h1>
+        <h2>Grade Computation Tool</h2>
+
+        <!-- Input fields for grades -->
+        <label for="attendance">Enter your number of absences (0 to 4):</label>
+        <input type="number" id="attendance" min="0" max="4" /><br /><br />
+
+        <label for="gradeprelim">Enter your Prelim Exam grade (0 to 100):</label>
+        <input type="number" id="gradeprelim" min="0" max="100" step="any" /><br /><br />
+
+        <label for="quizgrade">Enter your Quiz Grade (0 to 100):</label>
+        <input type="number" id="quizgrade" min="0" max="100" step="any" /><br /><br />
+
+        <label for="reqgrade">Enter your Requirements Grade (0 to 100):</label>
+        <input type="number" id="reqgrade" min="0" max="100" step="any" /><br /><br />
+
+        <label for="recigrade">Enter your Recitation Grade (0 to 100):</label>
+        <input type="number" id="recigrade" min="0" max="100" step="any" /><br /><br />
+
+        <button id="calculate-btn">Calculate Grades</button>
+
+        <!-- Placeholder for the result -->
+        <p id="result"></p>
+
+        <!-- Python code using PyScript -->
+        <py-script>
+            from pyscript import Element
+
+            def calculate_grades(*args):
+                try:
+                    attendance = int(Element("attendance").element.value)
+                    gradeprelim = float(Element("gradeprelim").element.value)
+                    quizgrade = float(Element("quizgrade").element.value)
+                    reqgrade = float(Element("reqgrade").element.value)
+                    recigrade = float(Element("recigrade").element.value)
+
+                    if attendance < 0 or attendance > 4:
+                        Element("result").element.innerHTML = "Invalid input for absences! Please enter a number between 0 and 4."
+                        return
+
+                    if attendance == 4:
+                        Element("result").element.innerHTML = "You have failed due to 4 absences."
+                        return
+
+                    num1 = {0: 1.0, 1: 0.90, 2: 0.80, 3: 0.70}.get(attendance)
+                    classtand = (quizgrade * 0.40) + (reqgrade * 0.30) + (recigrade * 0.30)
+
+                    prelimoverall = (gradeprelim * 0.60) + num1 + (classtand * 0.30)
+
+                    passing_grade = 75
+                    weight_prelim = 0.20
+                    weight_midterm = 0.30
+                    weight_final = 0.50
+
+                    prelim1 = passing_grade - (gradeprelim * weight_prelim) / (weight_midterm + weight_final)
+                    midfin = ((weight_midterm + gradeprelim) - prelim1) - weight_final
+                    overall_grade = prelim1 + midfin
+
+                    if prelimoverall < 75:
+                        Element("result").element.innerHTML = "You failed."
+                    else:
+                        required_midterm = (overall_grade * 0.80) + (prelimoverall * weight_prelim)
+                        required_final = (overall_grade * weight_final) + (required_midterm * weight_midterm) + (prelimoverall * weight_prelim)
+                        result_message = f"Required Midterm Grade for Passing: {required_midterm:.2f}<br>Required Final Grade for Passing: {required_final:.2f}"
+                        Element("result").element.innerHTML = result_message
+
+                        if overall_grade >= 90:
+                            Element("result").element.innerHTML += "<br>You are a Dean’s Lister Scholar!"
+
+                except ValueError:
+                    Element("result").element.innerHTML = "Please enter valid numbers for all fields."
+
+            # Bind the function to the button click event
+            Element("calculate-btn").element.onclick = calculate_grades
+        </py-script>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+</body>
+</html>
